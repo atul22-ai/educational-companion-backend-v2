@@ -1,4 +1,4 @@
-import { fetchTranscript } from 'youtube-transcript-api'; // Corrected import
+import YoutubeTranscript from 'youtube-transcript-api'; // Corrected default import
 import axios from 'axios';
 import Video from './videoModel.js';
 
@@ -10,14 +10,14 @@ export const fetchTranscriptAndSave = async (req, res) => {
   }
 
   try {
-    // Corrected function call
-    const transcript = await fetchTranscript(videoId);
+    // Corrected function call using the default import
+    const transcript = await YoutubeTranscript.fetchTranscript(videoId);
 
     if (!transcript || transcript.length === 0) {
       return res.status(404).json({ message: '❌ Transcript not found for this video.' });
     }
 
-    const oEmbedUrl = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=${videoId}`;
+    const oEmbedUrl = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=${videoId}&format=json`;
     const videoInfo = await axios.get(oEmbedUrl);
     
     const newVideo = new Video({
