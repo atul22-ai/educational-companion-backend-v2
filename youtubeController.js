@@ -1,4 +1,4 @@
-import YoutubeTranscript from 'youtube-transcript-api'; // <-- Corrected import statement
+import { fetchTranscript } from 'youtube-transcript-api'; // Corrected import
 import axios from 'axios';
 import Video from './videoModel.js';
 
@@ -10,7 +10,8 @@ export const fetchTranscriptAndSave = async (req, res) => {
   }
 
   try {
-    const transcript = await YoutubeTranscript.fetchTranscript(videoId);
+    // Corrected function call
+    const transcript = await fetchTranscript(videoId);
 
     if (!transcript || transcript.length === 0) {
       return res.status(404).json({ message: '❌ Transcript not found for this video.' });
