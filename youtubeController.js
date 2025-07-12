@@ -1,4 +1,4 @@
-import YoutubeTranscript from 'youtube-transcript-api'; // Corrected default import
+import YoutubeTranscript from 'youtube-transcript-api'; // Correct default import
 import axios from 'axios';
 import Video from './videoModel.js';
 
