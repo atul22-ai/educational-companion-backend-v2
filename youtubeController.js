@@ -1,7 +1,7 @@
 import { YoutubeTranscript } from "youtube-transcript"; // already working
 import axios from "axios";
 import Video from "./videoModel.js";
-import mapTranscriptToConcepts from "./conceptMapper.mjs"; // ✅ Import concept mapper
+import mapTranscriptToConcepts from "./conceptmapper.js"; // ✅ Import concept mapper
 
 export const fetchTranscriptAndSave = async (req, res) => {
   const { videoId } = req.params;
