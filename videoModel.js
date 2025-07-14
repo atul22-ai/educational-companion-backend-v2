@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 const videoSchema = new mongoose.Schema({
-  videoId: String,
+  videoId: { type: String, required: true, unique: true },
   title: String,
   thumbnail: String,
   transcript: Array,
-});
+  transcriptSource: { type: String, enum: ['real', 'mock'], default: 'real' }, // ✅ Add this
+}, { timestamps: true });
 
-const Video = mongoose.model("Video", videoSchema);
-export default Video;
+export default mongoose.model("Video", videoSchema);
