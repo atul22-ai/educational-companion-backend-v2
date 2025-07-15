@@ -1,16 +1,17 @@
+// ✅ conceptMapper.js
 import fs from "fs/promises";
 import path from "path";
 import dotenv from "dotenv";
 
 // ✅ LangChain v0.3+ imports
-import { OpenAI } from "@langchain/openai";
-import { RetrievalQAChain } from "langchain/chains/retrieval_qa";
+import { OpenAIEmbeddings, OpenAI } from "@langchain/openai";
+import { RetrievalQAChain } from "langchain/chains"; // ✅ fixed
 import { JSONLoader } from "langchain/document_loaders/fs/json";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
-import { OpenAIEmbeddings } from "@langchain/openai";
 
 dotenv.config();
+
 
 const mapTranscriptToConcepts = async (transcriptText) => {
   try {
@@ -21,29 +22,31 @@ const mapTranscriptToConcepts = async (transcriptText) => {
     const loader = new JSONLoader(ncertPath, "/concepts");
     const docs = await loader.load();
 
-    // ✅ Split documents into chunks
+    // ✅ Split documents into manageable chunks
     const splitter = new RecursiveCharacterTextSplitter({
       chunkSize: 300,
       chunkOverlap: 30,
     });
     const splitDocs = await splitter.splitDocuments(docs);
 
-    // ✅ Create a vector store with OpenAI embeddings
+    // ✅ Create vector store using OpenAI embeddings
     const vectorstore = await MemoryVectorStore.fromDocuments(
       splitDocs,
-      new OpenAIEmbeddings()
+      new OpenAIEmbeddings({
+        openAIApiKey: process.env.OPENAI_API_KEY, // ✅ read from .env
+      })
     );
 
     // ✅ Initialize LLM
     const model = new OpenAI({
       temperature: 0,
-      openAIApiKey: process.env.OPENAI_API_KEY, // Make sure you have this in .env
+      openAIApiKey: process.env.OPENAI_API_KEY, // ✅ read from .env
     });
 
-    // ✅ Create RetrievalQAChain
+    // ✅ Create a RetrievalQA chain
     const chain = RetrievalQAChain.fromLLM(model, vectorstore.asRetriever());
 
-    // ✅ Run the query
+    // ✅ Run a query to map transcript to concepts
     const response = await chain.call({
       query: `Map this transcript to relevant NCERT concepts with chapter, section, and page: ${transcriptText}`,
     });
